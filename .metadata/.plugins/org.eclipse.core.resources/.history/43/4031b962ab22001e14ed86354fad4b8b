@@ -1,0 +1,40 @@
+package rest;
+import programsClasses.Program;
+
+public class Driver {
+	public static void findLeastAndMostExpensiveProgram(Object[] programs){
+
+        // Bubble Sort algorithm to order elements
+        int n = programs.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+            	if (programs[j] instanceof Program && programs[j+1] instanceof Program) {
+            		Program program1 = (Program) programs[j];
+            		Program program2 = (Program) programs[j + 1];
+            		
+	                if (program1.totalCredits > program2.totalCredits) {
+	                	
+	                	// Swap the elements
+	                    int temp = programs[j];
+	                    programs[j] = programs[j + 1];
+	                    programs[j + 1] = temp;
+	                    
+	                }
+            	}
+            }
+        }
+
+        // Print the sorted array
+        for (int element : array) {
+            System.out.print(element + " ");
+        }
+    }
+	}
+	
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

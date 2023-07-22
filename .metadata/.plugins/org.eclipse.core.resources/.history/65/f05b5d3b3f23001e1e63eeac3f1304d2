@@ -1,0 +1,330 @@
+package programsClasses;
+
+import rest.Course;
+
+public class Program {
+	private String name;
+	private String specialization;
+	private int totalCredits;
+	private String institution;
+	private Course[] requiredCourses;
+	private Course[] electiveCourses;
+	
+	public Program() {
+		this.name = "default";
+		this.specialization = "general";
+		this.totalCredits = 90;
+		this.institution = "Concordia";
+		this.requiredCourses = new Course[4];
+		this.electiveCourses = new Course[4];
+	}
+	public Program(String name, String specialization, int totalCredits, String institution, Course[] requiredCourses, Course[] electiveCourses) {
+		this.name = name;
+		this.specialization = specialization;
+		this.totalCredits = totalCredits;
+		this.institution = institution;
+		this.requiredCourses = requiredCourses;
+		this.electiveCourses = electiveCourses;
+	}
+	public Program(Program other) {
+		this.name = other.name;
+		this.specialization = other.specialization;
+		this.totalCredits = other.totalCredits;
+		this.institution = other.institution;
+		this.requiredCourses = other.requiredCourses;
+		this.electiveCourses = other.electiveCourses;
+	}
+	public String getName() {
+		return name;
+	}
+	public String getSpecialization() {
+		return specialization;
+	}
+	public int getTotalCredits() {
+		return totalCredits;
+	}
+	public String getInstitution() {
+		return institution;
+	}
+	public Course[] getRequiredCourses() {
+		return requiredCourses;
+	}
+	public Course[] getElectiveCourses() {
+		return electiveCourses;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public void setSpecialization(String specialization) {
+		this.specialization = specialization;
+	}
+	public void setTotalCredits(int totalCredits) {
+		this.totalCredits = totalCredits;
+	}
+	public void setInstitution(String institution) {
+		this.institution = institution;
+	}
+	public void setRequiredCourses(Course[] requiredCourses) {
+		this.requiredCourses = requiredCourses;
+	}
+	public void setElectiveCourses(Course[]	electiveCourses) {
+		this.electiveCourses = electiveCourses;
+	}
+}
+
+class GraduateProgram extends Program {
+	private String coordinator;
+	private static int creditCost;
+	public GraduateProgram() {
+		super();
+		this.coordinator = "Jamie";
+		creditCost = 60;
+	}
+	public GraduateProgram(String coordinator, int cost, String name, String specialization, int totalCredits, String institution, Course[] requiredCourses, Course[] electiveCourses) {
+		super(name, specialization, totalCredits, institution, requiredCourses, electiveCourses);
+		this.coordinator = coordinator;
+		creditCost = cost;
+	}
+	public GraduateProgram(GraduateProgram other) {
+		super(other);
+		this.coordinator = other.coordinator;
+	}
+	
+	public String getCoordinator() {
+		return coordinator;
+	}
+	public int creditCost()	{
+		return creditCost;
+	}
+	public void setCoordinator(String coordinator) {
+		this.coordinator = coordinator;
+	}
+	public void setCreditCost(int cost) {
+		creditCost = cost;
+	}
+	
+	public String toString() {
+		return "coordinator: " + coordinator + ", credit cost: " + creditCost;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} 
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		GraduateProgram other = (GraduateProgram) obj;
+		
+		return coordinator.equals(other.coordinator);
+	}
+}
+
+class UndergraduateProgram extends Program {
+	private boolean accredited;
+	private static int creditCost;
+	
+	public UndergraduateProgram() {
+		super();
+		this.accredited = false;
+		creditCost = 60;
+	}
+	public UndergraduateProgram(boolean accredited, int cost, String name, String specialization, int totalCredits, String institution, Course[] requiredCourses, Course[] electiveCourses) {
+		super(name, specialization, totalCredits, institution, requiredCourses, electiveCourses);
+		this.accredited = accredited;
+		creditCost = cost;
+	}
+	public UndergraduateProgram(UndergraduateProgram other) {
+		super(other);
+		this.accredited = other.accredited;
+	}
+	public boolean getAccredited() {
+		return accredited;
+	}
+	public int getCreditCost() {
+		return creditCost;
+	}
+	public void setAccredited(boolean accredited) {
+		this.accredited = accredited;
+	}
+	public void setCreditCost(int cost) {
+		creditCost = cost;
+	}
+	public String toString() {
+		return "accredited: " + accredited + ", credit cost: " + creditCost;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} 
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		UndergraduateProgram other = (UndergraduateProgram) obj;
+		
+		return accredited == other.accredited;
+	}
+}
+
+class CertificateProgram extends Program {
+	private int capacity;
+	private static int creditCost;
+	
+	public CertificateProgram() {
+		super();
+		this.capacity = 30;
+		creditCost = 60;
+	}
+	public CertificateProgram(int capacity, int cost, String name, String specialization, int totalCredits, String institution, Course[] requiredCourses, Course[] electiveCourses) {
+		super(name, specialization, totalCredits, institution, requiredCourses, electiveCourses);
+		this.capacity = capacity;
+		creditCost = cost;
+	}
+	public CertificateProgram(CertificateProgram other) {
+		super(other);
+		this.capacity = other.capacity;
+	}
+	public int getCapacity() {
+		return capacity;
+	}
+	public int getCreditCost() {
+		return creditCost;
+	}
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+	public void setCreditCost(int cost) {
+		creditCost = cost;
+	}
+	public String toString() {
+		return "capacity: " + capacity + ", credit cost: " + creditCost;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} 
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		CertificateProgram other = (CertificateProgram) obj;
+		
+		return capacity == other.capacity;
+	}
+}
+
+class SpecialProgram extends Program {
+	private int duration;
+	private static int creditCost;
+	
+	public SpecialProgram() {
+		super();
+		this.duration = 30;
+		creditCost = 60;
+	}
+	public SpecialProgram(int duration, int cost, String name, String specialization, int totalCredits, String institution, Course[] requiredCourses, Course[] electiveCourses) {
+		super(name, specialization, totalCredits, institution, requiredCourses, electiveCourses);
+		this.duration = duration;
+		creditCost = cost;
+	}
+	public SpecialProgram(SpecialProgram other) {
+		super(other);
+		this.duration = other.duration;
+	}
+	public int getDuration() {
+		return duration;
+	}
+	public int getCreditCost() {
+		return creditCost;
+	}
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+	public void setCreditCost(int cost) {
+		creditCost = cost;
+	}
+	public String toString() {
+		return "duration: " + duration + ", credit cost: " + creditCost;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} 
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		SpecialProgram other = (SpecialProgram) obj;
+		
+		return duration == other.duration;
+	}
+}
+
+class Driver {
+	public static void findLeastAndMostExpensiveProgram(Program[] programs) {
+
+        // Bubble Sort algorithm to order elements
+        int n = programs.length;
+        if (n < 1) {
+	        for (int i = 0; i < n - 1; i++) {
+	            for (int j = 0; j < n - i - 1; j++) {
+	                if (programs[j].getTotalCredits() > programs[j + 1].getTotalCredits()) {
+	                    // Swap the elements
+	                    Program temp = programs[j];
+	                    programs[j] = programs[j + 1];
+	                    programs[j + 1] = temp;
+	                }
+	            }
+	        }
+	        System.out.println(programs[0]);
+	        System.out.println(programs[n-1]);
+        } else if (n == 1) {
+        	System.out.println(programs[0]);
+        } else {
+        	System.out.println("There are no programs in this array.");
+        }
+	}
+	public static void main(String[] args) {
+		UndergraduateProgram undergrad1 = new UndergraduateProgram();
+		UndergraduateProgram undergrad2 = new UndergraduateProgram();
+		UndergraduateProgram undergrad3 = new UndergraduateProgram();
+		System.out.println(undergrad1);
+		System.out.println(undergrad2);
+		System.out.println(undergrad3);
+		GraduateProgram grad1			= new GraduateProgram();
+		GraduateProgram grad2			= new GraduateProgram();
+		GraduateProgram grad3			= new GraduateProgram();
+		System.out.println(grad1);
+		System.out.println(grad2);
+		System.out.println(grad3);
+		CertificateProgram certificate1 = new CertificateProgram();
+		CertificateProgram certificate2 = new CertificateProgram();
+		System.out.println(certificate1);
+		System.out.println(certificate2);
+		SpecialProgram special1			= new SpecialProgram();
+		SpecialProgram special2			= new SpecialProgram();
+		
+		if (undergrad1.equals(undergrad2)) {
+			System.out.println("They are equal!");
+		} else {
+			System.out.println("These are not equal.");
+		}
+		if (undergrad3.equals(grad2)) {
+			System.out.println("They are equal!");
+		} else {
+			System.out.println("These are not equal.");
+		}
+		if (special1.equals(special2)) {
+			System.out.println("They are equal!");
+		} else {
+			System.out.println("These are not equal.");
+		}
+		
+		Program[] programs1 = {undergrad1, undergrad1, grad2, grad3, undergrad2, special1, special2, special2, grad3, grad3,
+				undergrad2, special1, special2, grad3, grad3, certificate2};
+		Program[] programs2 = {undergrad2, undergrad2, grad2, undergrad2, grad1, grad1, grad1, grad3, special1, grad1,
+				special2, special2, certificate1, certificate2, certificate1};
+	}
+}
+

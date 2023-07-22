@@ -1,0 +1,83 @@
+package programsClasses;
+
+public class Program {
+	private String name;
+	private String specialization;
+	private int totalCredits;
+	private String institution;
+	private Course[] requiredCourses;
+	private Course[] electiveCourses;
+}
+
+class GraduateProgram extends Program {
+	private String coordinator;
+	private static int creditCost;
+	
+	public GraduateProgram() {
+		this.coordinator = "Jamie";
+		this.creditCost = 60;
+	}
+	public GraduateProgram(String coordinator, int creditCost) {
+		this.coordinator = coordinator;
+		this.creditCost = creditCost;
+	}
+	public GraduateProgram(GraduateProgram other) {
+		this.coordinator = other.coordinator;
+		this.creditCost  = other.creditCost;
+	}
+}
+
+class UndergraduateProgram extends Program {
+	private boolean accredited;
+	private static int creditCost;
+	
+	public UndergraduateProgram() {
+		this.accredited = false;
+		this.creditCost = 60;
+	}
+	public UndergraduateProgram(boolean accredited, int creditCost) {
+		this.accredited = accredited;
+		this.creditCost = creditCost;
+	}
+	public UndergraduateProgram(UndergraduateProgram other) {
+		this.accredited = other.accredited;
+		this.creditCost = other.creditCost;
+	}
+}
+
+class CertificateProgram extends Program {
+	private int capacity;
+	private static int creditCost;
+	
+	public CertificateProgram() {
+		this.capacity = 30;
+		this.creditCost = 60;
+	}
+	public CertificateProgram(int capacity, int creditCost) {
+		this.capacity = capacity;
+		this.creditCost = creditCost;
+	}
+	public CertificateProgram(CertificateProgram other) {
+		this.capacity = other.capacity;
+		this.creditCost = other.creditCost;
+	}
+}
+
+class SpecialProgram extends Program {
+	private int duration;
+	private static int creditCost;
+	
+	public SpecialProgram() {
+		this.duration = 30;
+		this.creditCost = 60;
+	}
+	public SpecialProgram(int duration, int creditCost) {
+		this.duration = duration;
+		this.creditCost = creditCost;
+	}
+	public SpecialProgram(SpecialProgram other) {
+		this.duration = other.duration;
+		this.creditCost = other.creditCost;
+	}
+}
+
