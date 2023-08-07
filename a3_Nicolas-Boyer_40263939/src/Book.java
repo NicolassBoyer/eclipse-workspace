@@ -25,9 +25,9 @@ class BookList {
 	}
 	public void addToStart(Book b) {
 		if (head != null) {
-			head.setNextBook(head.getCurrentBook());
+			head.next = head.b;
 		}
-		head.setCurrentBook(b);
+		head.b = b;
 	}
 	public void storeRecordsByYear(int yr) {
 		
@@ -55,19 +55,6 @@ class BookList {
 	private class Node {
 		private Book b;
 		private Book next;
-		
-		public Book getCurrentBook() {
-			return b;
-		}
-		public Book getNextBook() {
-			return next;
-		}
-		public void setCurrentBook(Book b) {
-			this.b = b;
-		}
-		public void setNextBook(Book next) {
-			this.next = next;
-		}
 	}
 }
 
