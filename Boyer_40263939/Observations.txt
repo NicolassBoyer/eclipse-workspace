@@ -1,0 +1,12 @@
+// Nicolas Boyer
+// 40263939
+
+a)  The first algorithm is of exponential complexity as it calls itself more than two times in a
+	single recursive call. Those calls can each also cause several recursive calls making it grow exponentially.
+	
+	The second algorithm is of linear complexity because it only calls itself once per recursive call, which results
+	in less calls overall. The additional use of an array that holds all the terms makes it so that the call stack
+	isn't overwhelmed by being called for every single term.
+	
+b)	Yes, both use tail recursion as the recursive call is done at the end of each recursion step.
+	

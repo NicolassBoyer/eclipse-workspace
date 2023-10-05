@@ -1,10 +1,13 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.PrintWriter;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 
 //-----------------------------------------------------
 //Assignment 23
@@ -39,6 +42,7 @@ class BookList {
 	}
 	
 	// Other methods
+	// add a book to the start of a circular linked list
 	public void addToStart(Book b) {
 		Node n;
 		if (head != null) {
@@ -49,6 +53,7 @@ class BookList {
 		head = n;
 		n = null;
 	}
+	// store the records into a file for the entered year
 	public void storeRecordsByYear(int yr) {
 		String yrStr = "" + yr;
 		boolean createFile = false;
@@ -86,15 +91,45 @@ class BookList {
 				current = current.next;
 			}
 		}
+		yearWriter.close();
 	}
+	// insert a book before the book with the entered isbn
 	public boolean insertBefore(long isbn, Book b) {
 		Node current = head;
 		
-		while(current.next != null) {
-			if (current.b.ISBN == isbn) {
+		while(current != null && current.next != head) {
+			if (current.next.b.ISBN == isbn) {
 				Node nodeInsert = new Node(b,current.next);
-				current.next = current;
-				current = nodeInsert;
+				current.next = nodeInsert;
+				
+				if (current.next == head) {
+					head = nodeInsert;
+				}
+				
+				return true;
+			} else {
+				current = current.next;
+			}
+		}
+		return false;
+	}
+	// insert a book between the too isbn numbers entered
+	public boolean insertBetween(long isbn1, long isbn2, Book b) {
+		if (head == null || head.next == head) {
+			return false;
+		}
+		
+		if (head.b.ISBN == isbn1 && head.next.b.ISBN == isbn2) {
+			Node nodeInsert = new Node(b, head.next);
+			head.next = nodeInsert;
+			return true;
+		}
+		
+		Node current = head;
+		while(current.next != null && current.next != head) {
+			if ((current.b.ISBN == isbn1 && current.next.b.ISBN == isbn2) || (current.b.ISBN == isbn2 && current.next.b.ISBN == isbn1)) {
+				Node nodeInsert = new Node(b,current.next);
+				current.next = nodeInsert;
 				return true;
 			}
 			if (current.next != null) {
@@ -103,24 +138,7 @@ class BookList {
 		}
 		return false;
 	}
-	public boolean insertBetween(long isbn1, long isbn2, Book b) {
-		Node current = head;
-		
-		while(current.next != null) {
-			if (current.b.ISBN == isbn1) {
-				if (current.next.b.ISBN == isbn2) {
-					Node nodeInsert = new Node(b,current.next);
-					current.next = current;
-					current = nodeInsert;
-					return true;
-				}
-			}
-			if (current.next != null) {
-				current = current.next;
-			}
-		}
-		return false;
-	}
+	// Show all content in the booklist
 	public void displayContent() {
 		Node current = head;
 		
@@ -133,6 +151,7 @@ class BookList {
 			}
 		}
 	}
+	// Delete all following duplicates on the circular list
 	public void delConsecutiveRepeatedRecords() {
 		Node current = head;
 		
@@ -150,6 +169,7 @@ class BookList {
 			}
 		}
 	}
+	// create a new booklist with only a specific author
 	public BookList extractAuthList(String aut) {
 		Node current = head;
 		BookList newList = new BookList();
@@ -162,30 +182,33 @@ class BookList {
 		}
 		return newList;
 	}
+	// swap two elements in the circular list
 	public boolean swap(long isbn1, long isbn2) {
-		Node current = head;
-		Node temp1 = null;
-		Node temp2 = null;
-		
-		while(current != null) {
-			if (current.b.ISBN == isbn1) {
-				temp1 = current;
-			} else if (current.b.ISBN == isbn2) {
-				temp2 = current;
-			}
-		}
-		if (temp1 != null && temp2 != null) {
-			Node otherTemp = null;
-			otherTemp = temp1;
-			temp1 = temp2;
-			temp2 = otherTemp;
-			return true;
-		}
-		return false;
+	    Node current = head;
+	    Node temp1 = null;
+	    Node temp2 = null;
+
+	    while (current != null) {
+	        if (current.b.ISBN == isbn1) {
+	            temp1 = current;
+	        } else if (current.b.ISBN == isbn2) {
+	            temp2 = current;
+	        }
+	        current = current.next; // Move to the next node
+	    }
+
+	    if (temp1 != null && temp2 != null) {
+	        // Swap the books within the nodes
+	        Book tempBook = temp1.b;
+	        temp1.b = temp2.b;
+	        temp2.b = tempBook;
+	        
+	        return true;
+	    }
+
+	    return false;
 	}
-	 /**
-     * Private inner class representing a node in the linked list.
-     */
+
 	private class Node {
 		private Book b;
 		Node next;
@@ -234,6 +257,7 @@ class Driver {
 		}
 		
 		int bookCount = 0;
+		// store all books into either the circular list at the start or print them into a year array file
 		while (booksIn.hasNextLine()) {
 			String strBook = booksIn.nextLine();
 			String[] bookArr = strBook.split(",");
@@ -247,13 +271,28 @@ class Driver {
 			currentBook.genre = bookArrTrim[4];
 			currentBook.year = Integer.parseInt(bookArrTrim[5]);
 			
-			if (currentBook.year > 2023 || currentBook.year < 1900) {
+			if (currentBook.year > 2023 || currentBook.year < 1900) { // print into year arraylist if year isnt correct
 				arrLst.add(currentBook);
 			} else {
 				bkLst.addToStart(currentBook);
 			}
 		}
 		
+		try {
+			// create buffered writer to write all arraylist items into the error file
+			BufferedWriter writer = new BufferedWriter(new FileWriter("YearErr.txt"));
+			
+			for (Book element : arrLst){
+				writer.write(element.title + ", " + element.author + ", " + element.price + ", " + element.ISBN
+						+ ", " + element.genre + ", " + element.year);
+				writer.newLine();
+			}
+			
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Error writing to the file: " + e.getMessage());
+		}
+		// display menu for users
 		System.out.println("1)	Give me a year # and I would extract all records of that year and store them in a file for that year");
 		System.out.println("2)	Ask me to delete all consecutive repeated records");
 		System.out.println("3)	Give me an author name and I will create a new list with the records of this author and display them;");
@@ -263,30 +302,37 @@ class Driver {
 		System.out.println("7)	Tell me to STOP TALKING.");
 		
 		Scanner in = new Scanner(System.in);
-		int choice = in.nextInt();
-		
-		while (choice != 7) {
+		int choice;
+		// menu continues to function whilst the user has not entered 7
+		do {
+			choice = in.nextInt();
+			in.nextLine();
 			switch (choice) {
 			case 1:
 				System.out.println("Enter a year: ");
 				int year = in.nextInt();
+				in.nextLine();
 				bkLst.storeRecordsByYear(year);
+				
 				bkLst.displayContent();
-				choice = in.nextInt();
 				break;
 			case 2:
 				bkLst.delConsecutiveRepeatedRecords();
+				System.out.println();
+				bkLst.displayContent();
 				break;
 			case 3:
 				System.out.println("Enter an author name: ");
 				String author = in.nextLine();
-				bkLst.extractAuthList(author);
+				BookList authList = bkLst.extractAuthList(author);
+				authList.displayContent();
+				System.out.println("");
 				bkLst.displayContent();
-				choice = in.nextInt();
 				break;
 			case 4:
 				System.out.println("Give me an ISBN number to find: ");
 				long isbnID = in.nextLong();
+				in.nextLine();
 				Book bkEnter = new Book();
 				System.out.println("Enter the book's title:");
 				bkEnter.title = in.nextLine();
@@ -294,23 +340,28 @@ class Driver {
 				bkEnter.author = in.nextLine();
 				System.out.println("Enter the book's price:");
 				bkEnter.price = in.nextDouble();
+				in.nextLine();
 				System.out.println("Enter the book's ISBN:");
 				bkEnter.ISBN = in.nextLong();
+				in.nextLine();
 				System.out.println("Enter the book's genre:");
 				bkEnter.genre = in.nextLine();
 				System.out.println("Enter the book's year:");
 				bkEnter.year = in.nextInt();
+				in.nextLine();
 				boolean canInsert = bkLst.insertBefore(isbnID, bkEnter);
 				if (canInsert) { System.out.println("Inserted!"); }
 				else { System.out.println("Cannot insert into this position."); } 
+				System.out.println();
 				bkLst.displayContent();
-				choice = in.nextInt();
 				break;
 			case 5:
 				System.out.println("Give me an ISBN number to find: ");
 				long isbnID1 = in.nextLong();
+				in.nextLine();
 				System.out.println("Give me a second one: ");
 				long isbnID2 = in.nextLong();
+				in.nextLine();
 				Book bkEnter2 = new Book();
 				System.out.println("Enter the book's title:");
 				bkEnter2.title = in.nextLine();
@@ -318,38 +369,41 @@ class Driver {
 				bkEnter2.author = in.nextLine();
 				System.out.println("Enter the book's price:");
 				bkEnter2.price = in.nextDouble();
+				in.nextLine();
 				System.out.println("Enter the book's ISBN:");
 				bkEnter2.ISBN = in.nextLong();
+				in.nextLine();
 				System.out.println("Enter the book's genre:");
 				bkEnter2.genre = in.nextLine();
 				System.out.println("Enter the book's year:");
 				bkEnter2.year = in.nextInt();
+				in.nextLine();
 				boolean canInsert2 = bkLst.insertBetween(isbnID1, isbnID2, bkEnter2);
 				if (canInsert2) { System.out.println("Inserted!"); }
 				else { System.out.println("Cannot insert into this position."); } 
 				bkLst.displayContent();
-				choice = in.nextInt();
 				break;
 			case 6:
 				System.out.println("Give me an ISBN number to find: ");
 				long isbnSwap1 = in.nextLong();
+				in.nextLine();
 				System.out.println("Give me a second one: ");
 				long isbnSwap2 = in.nextLong();
+				in.nextLine();
 				boolean canSwap = bkLst.swap(isbnSwap1, isbnSwap2);
 				if (canSwap) { System.out.println("Swapped!"); }
 				else { System.out.println("Cannot swap these."); } 
 				bkLst.displayContent();
-				choice = in.nextInt();
 				break;
 			case 7:
 				break;
 			default:
 				System.out.println("Please enter a valid choice.");
 				bkLst.displayContent();
-				choice = in.nextInt();
 				break;
 			}
-		}
+		} while (choice != 7);
+		// termination message
 		System.out.println("Thank you for using my program!");
 	}
 	/**

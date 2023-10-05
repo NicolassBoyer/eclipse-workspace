@@ -1,0 +1,34 @@
+// Nicolas Boyer
+// 40263939
+
+
+Algorithm multipleTetra(k):
+		Input: nonnegative integer k
+		Output: the sum of the last 4 Tetrannaci numbers before k
+
+		if k < 3
+			return 0
+		else if k = 3
+			return 1
+		else
+			return multipleTetra(k - 1) + multipleTetra(k - 2) + multipleTetra(k - 3) + multipleTetra(k - 4)
+
+
+Algorithm int[] linearTetra(k, terms):
+		Input: nonnegative integer k and array of integers terms
+		Output: the Tetrannaci numbers of said array, whose amount depends on k
+
+		newTerms = new int[terms.length+1]
+		newSum = 0				  
+		for each element in terms
+			newTerms[i] = terms[i]
+
+		for each element at the end of terms (4 in total)
+			newSum += terms[i]
+			
+		newTerms[newTerms.length-1] = newSum
+		
+		if (k = 1)
+			return newTerms
+		else
+			return linearTetra(k - 1, newTerms)
