@@ -1,0 +1,61 @@
+Frog A:
+findPath(S, H, idx):
+    if idx equals 0:
+        Set S[0] to 1
+        Return 0
+    if idx equals 1:
+        Set S[1] to 1
+        Return absolute difference between H[1] and H[0]
+
+    energy1 = findPath(S, H, idx - 1) + absolute difference between H[idx] and H[idx - 1]
+    energy2 = findPath(S, H, idx - 2) + absolute difference between H[idx] and H[idx - 2]
+
+    if idx equals length of H minus 1 or energy1 is less than energy2:
+        Set S[idx] to 1
+        Return energy1
+    else:
+        Set S[idx] to 0
+        Return energy2
+
+
+Frog B:
+findPath(S, H):
+    n = length of array H
+    energy = array of size n
+    prev = array of size n
+
+    energy[0] = 0
+    prev[0] = -1
+
+    stack = empty stack
+    stack.push(0)
+
+    for i from 1 to n-1:
+        energy[i] = energy[i-1] + abs(H[i] - H[i-1])
+        prev[i] = i - 1
+
+        if i >= 2 and energy[i] > energy[i-2] + abs(H[i] - H[i-2]):
+            energy[i] = energy[i-2] + abs(H[i] - H[i-2])
+            prev[i] = i - 2
+            while stack.size() > 2:
+                stack.pop()
+        
+        stack.push(i)
+
+    idx = n - 1
+    while idx >= 0:
+        S[idx] = 1
+        idx = prev[idx]
+
+    return energy[n - 1]
+
+
+a) The time complexity is of O(n), as the code loops through the array only once, and the program depends on size n of the
+array. The space complexity is O(1), as there will always be the same variables created no matter the input.
+
+b) The type of recursion used is bilinear recursion, as there are two recursive calls to the function in one iteration.
+
+c) Stacks allow for easier tracking and manipulation of the rocks, which is particularly helpful when looking back at previous
+positions and determining the energy used. Queues use first-in-first-out, which isn't ideal for this scenario.
+
+d) It is not possible. All array configurations are solvable, as far as I know.

@@ -27,7 +27,7 @@ public class multipleTetranacci {
 			e.printStackTrace();
 		}
 		
-		for (int i = 0; i <= 40; i++) { // run for first 40 numbers, not 200 this time to avoid overloading the stack call
+		for (int i = 0; i <= 20; i++) { // run for first 40 numbers, not 200 this time to avoid overloading the stack call
 			 int currentNum = multipleTetra(i);
 	         try {
 	        	 if (i % 5 == 0 && i != 0) { // add the current number only if its an increment of 5

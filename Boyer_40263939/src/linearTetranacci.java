@@ -37,7 +37,7 @@ public class linearTetranacci {
 		}
 		int[] initialTerms = { 0,0,0,1 }; // initialize an array of terms to use
 		
-		for (int i = 5; i <= 40; i += 5) { // for loop in increments of 5
+		for (int i = 5; i <= 20; i += 5) { // for loop in increments of 5
 			int[] currentNum = linearTetra(i, initialTerms); // run recursive method, which will determine this new array
 			try {
 				writer.write(currentNum[i] + "\n");
