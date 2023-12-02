@@ -21,7 +21,7 @@ public class CleverSIDC {
 			System.out.println("Invalid size. Must be 100 <= size <= 500,000");
 		}
 	}
-	public static String generate() {
+	public static long generate() {
 		// randomly generates new non-existing key of 8 digits
 		String numbers = "0123456789";
 		Random random = new Random();
@@ -33,7 +33,8 @@ public class CleverSIDC {
 			char randomChar = numbers.charAt(randomIndex);
 			keyGenerator.append(randomChar);
 		}
-		return keyGenerator.toString();
+		String keyString = keyGenerator.toString();
+		return Long.parseLong(keyString);
 	}
 	public Object[] allKeys() {
 		
@@ -112,7 +113,7 @@ public class CleverSIDC {
 	
 
 	public static void main(String[] args) {
-		Queue newQueue = new Queue();
+		
 		
 	}
 
