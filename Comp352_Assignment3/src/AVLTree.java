@@ -1,135 +1,167 @@
 
 public class AVLTree<T extends Comparable<T>> implements Tree<T> {
 	
-	private Node<T> root;
-	
+	private AVLNode<T> root;
+	private Sequence orderedElements;
 	
 	public boolean isEmpty() {
 		return root == null;
 	}
 	
-	private T getMin(Node<T> node) {
-		if (node.getLeftChild() != null) {
-			return getMin(node.getLeftChild());
+	private T getMin(AVLNode<T> AVLNode) {
+		if (AVLNode.getLeftChild() != null) {
+			return getMin(AVLNode.getLeftChild());
 		}
-		return node.getData();
+		return AVLNode.getData();
 	}
 	
-	private T getMax(Node<T> node) {
-		if (node.getRightChild() != null) {
-			return getMax(node.getRightChild());
+	private T getMax(AVLNode<T> AVLNode) {
+		if (AVLNode.getRightChild() != null) {
+			return getMax(AVLNode.getRightChild());
 		}
-		return node.getData();
+		return AVLNode.getData();
 	}
 	
-	private void traverseInOrder(Node<T> node) {
-		if (node != null) {
-			System.out.println(node.getLeftChild());
-			System.out.println(node);
-			System.out.println(node.getRightChild());
-		}
+	private void traverseInOrder(AVLNode<T> AVLNode) {
+		if (AVLNode != null) {
+	        // Traverse the left subtree
+	        traverseInOrder(AVLNode.getLeftChild());
+
+	        // Visit the current node
+	        orderedElements.add(AVLNode.getData());
+	        System.out.println(AVLNode.getData());
+
+	        // Traverse the right subtree
+	        traverseInOrder(AVLNode.getRightChild());
+	    }
 	}
 	
-	@SuppressWarnings("unused")
-	private Node<T> insert(T data, Node<T> node) {
-		if (node == null) {
-			return new Node<>(data);
+	private AVLNode<T> insert(T data, AVLNode<T> AVLNode) {
+		if (AVLNode == null) {
+			return new AVLNode<>(data);
 		}
-		if (data.compareTo(node.getData()) < 0) {
-			node.setLeftChild(insert(data, node.getLeftChild()));
-		} else if (data.compareTo(node.getData()) > 0) {
-			node.setRightChild(insert(data, node.getRightChild()));
+		if (data.compareTo(AVLNode.getData()) < 0) {
+			AVLNode.setLeftChild(insert(data, AVLNode.getLeftChild()));
+		} else if (data.compareTo(AVLNode.getData()) > 0) {
+			AVLNode.setRightChild(insert(data, AVLNode.getRightChild()));
 		} else {
-			return node;
+			return AVLNode;
 		}
-		updateHeight(node);
-		return applyRotation(node);
+		updateHeight(AVLNode);
+		return applyRotation(AVLNode);
 	}
 	
-	@SuppressWarnings("unused")
-	private Node<T> delete(T data, Node<T> node) {
-		if (node == null) {
+	private AVLNode<T> delete(T data, AVLNode<T> AVLNode) {
+		if (AVLNode == null) {
 			return null;
 		}
-		if (data.compareTo(node.getData()) < 0) {
-			node.setLeftChild(delete(data, node.getLeftChild()));
-		} else if (data.compareTo(node.getData()) > 0) {
-			node.setRightChild(delete(data, node.getRightChild()));
+		if (data.compareTo(AVLNode.getData()) < 0) {
+			AVLNode.setLeftChild(delete(data, AVLNode.getLeftChild()));
+		} else if (data.compareTo(AVLNode.getData()) > 0) {
+			AVLNode.setRightChild(delete(data, AVLNode.getRightChild()));
 		} else {
-			// One child of Leaf Node (no children)
-			if (node.getLeftChild() == null) {
-				return node.getRightChild();
-			} else if (node.getRightChild() == null) {
-				return node.getLeftChild();
+			// One child of Leaf AVLNode (no children)
+			if (AVLNode.getLeftChild() == null) {
+				return AVLNode.getRightChild();
+			} else if (AVLNode.getRightChild() == null) {
+				return AVLNode.getLeftChild();
 			}
 			// Two Children
-			node.setData(getMax(node.getLeftChild()));
+			AVLNode.setData(getMax(AVLNode.getLeftChild()));
 			
 		}
-		updateHeight(node);
-		return applyRotation(node);
+		updateHeight(AVLNode);
+		return applyRotation(AVLNode);
 	}
 	
-	private void updateHeight(Node<T> node) {
+	private void updateHeight(AVLNode<T> AVLNode) {
 		int maxHeight = Math.max(
-				height(node.getLeftChild()),
-				height(node.getRightChild())
+				height(AVLNode.getLeftChild()),
+				height(AVLNode.getRightChild())
 		);
-		node.setHeight(maxHeight + 1);
+		AVLNode.setHeight(maxHeight + 1);
 	}
 	
-	private int height(Node<T> node) {
-		return node != null ? node.getHeight() : 0;
+	private int height(AVLNode<T> AVLNode) {
+		return AVLNode != null ? AVLNode.getHeight() : 0;
 	}
 	
-	private Node<T> applyRotation(Node<T> node) {
-		int balance = balance(node);
+	private AVLNode<T> applyRotation(AVLNode<T> AVLNode) {
+		int balance = balance(AVLNode);
 		if (balance > 1) {
-			if (balance(node.getLeftChild()) < 0) {
-				node.setLeftChild(rotateLeft(node.getLeftChild()));
+			if (balance(AVLNode.getLeftChild()) < 0) {
+				AVLNode.setLeftChild(rotateLeft(AVLNode.getLeftChild()));
 			}
-			return rotateRight(node);
+			return rotateRight(AVLNode);
 		}
 		if (balance < -1) {
-			if (balance(node.getRightChild()) < 0) {
-				node.setRightChild(rotateRight(node.getRightChild()));
+			if (balance(AVLNode.getRightChild()) < 0) {
+				AVLNode.setRightChild(rotateRight(AVLNode.getRightChild()));
 			}
-			return rotateRight(node);
+			return rotateRight(AVLNode);
 		}
-		return node;
+		return AVLNode;
 	}
 	
-	private Node<T> rotateRight(Node<T> node) {
-		// Node in this case would be the root node
-		Node<T> leftNode = node.getLeftChild();
-		Node<T> centerNode = leftNode.getRightChild();
-		leftNode.setRightChild(node);
-		node.setLeftChild(centerNode);
-		updateHeight(node);
+	private AVLNode<T> rotateRight(AVLNode<T> AVLNode) {
+		// AVLNode in this case would be the root AVLNode
+		AVLNode<T> leftNode = AVLNode.getLeftChild();
+		AVLNode<T> centerNode = leftNode.getRightChild();
+		leftNode.setRightChild(AVLNode);
+		AVLNode.setLeftChild(centerNode);
+		updateHeight(AVLNode);
 		updateHeight(leftNode);
-		return leftNode; // Left node is now root node
+		return leftNode; // Left AVLNode is now root AVLNode
 	}
 	
-	public Node<T> rotateLeft(Node<T> node) {
-		Node<T> rightNode = node.getRightChild();
-		Node<T> centerNode = rightNode.getLeftChild();
-		rightNode.setLeftChild(node);
-		node.setRightChild(centerNode);
-		updateHeight(node);
+	public AVLNode<T> rotateLeft(AVLNode<T> AVLNode) {
+		AVLNode<T> rightNode = AVLNode.getRightChild();
+		AVLNode<T> centerNode = rightNode.getLeftChild();
+		rightNode.setLeftChild(AVLNode);
+		AVLNode.setRightChild(centerNode);
+		updateHeight(AVLNode);
 		updateHeight(rightNode);
 		return rightNode;
 	}
+	// do inorder traversal and then delete 
+	private AVLNode<T> findAt(AVLNode<T> AVLNode, int nodeNum, int index) {
+		if (AVLNode != null) {
+	        // Traverse the left subtree
+	        AVLNode<T> leftResult = findAt(AVLNode.getLeftChild(), nodeNum, index);
+	        if (leftResult != null) {
+	            return leftResult; // Node found in the left subtree
+	        }
+	        
+	        index++;
+
+	        // Visit the current node
+	        if (nodeNum == index) {
+	            System.out.println(AVLNode.getData());
+	            return AVLNode; // Node found at the current position
+	        }
+	        index++;
+
+	        // Traverse the right subtree
+	        AVLNode<T> rightResult = findAt(AVLNode.getRightChild(), nodeNum, index);
+	        if (rightResult != null) {
+	            return rightResult; // Node found in the right subtree
+	        }
+	        index++;
+	    }
+	    
+	    return null; // Node not found
+	}
 	
-	private int balance(Node<T> node) {
-		return node != null
-				? height(node.getLeftChild()) - height(node.getRightChild())
+	private int balance(AVLNode<T> AVLNode) {
+		return AVLNode != null
+				? height(AVLNode.getLeftChild()) - height(AVLNode.getRightChild())
 				: 0;
 	}
 
 	@Override
 	public Tree<T> insert(T data) {
 		if (isEmpty()) {
-			root = new Node<>(data);
+			root = new AVLNode<>(data);
 		} else {
 			insert(data, root);
 		}
@@ -139,6 +171,10 @@ public class AVLTree<T extends Comparable<T>> implements Tree<T> {
 	@Override
 	public void delete(T data) {
 		root = delete(data, root);
+	}
+	
+	public AVLNode<T> findAt(int key) {
+		AVLNode<T> foundData = findAt(key);
 	}
 
 	@Override
@@ -158,7 +194,9 @@ public class AVLTree<T extends Comparable<T>> implements Tree<T> {
 	}
 	
 	@Override
-	public void traverse() {
+	public Sequence traverse() {
+		orderedElements = new Sequence();
 		traverseInOrder(root);
+		return orderedElements;
 	}
 }

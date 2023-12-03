@@ -1,13 +1,22 @@
 import java.util.Random;
 
-public class CleverSIDC {
-	private Object[] elements;
+public class CleverSIDC<K, V> {
+	private Object dataStructure;
 	private int size;
 	private static final int DEFAULT_MAX = 100;
 	
 	public CleverSIDC() {
-		this.elements = new Object[DEFAULT_MAX];
+		this.dataStructure = new Object[DEFAULT_MAX];
 		this.size = 100;
+	}
+	public Object getDataStructure() {
+		return dataStructure;
+	}
+	public void setDataStructure(Object structure) {
+		this.dataStructure = structure;
+	}
+	public int getSize() {
+		return size;
 	}
 	// creates a SIDC TH
 	public void SetSIDCThreshold(int size) {
@@ -16,6 +25,11 @@ public class CleverSIDC {
 		structures will be used (i.e. a Tree, Hash Table, AVL tree, binary tree, sequence, etc.)
 		 */
 		if (100 <= size && size <= 500000) {
+			if (size <= 1000) {
+				dataStructure = new HashTable<Integer, Integer>(size);
+			} else {
+				dataStructure = new AVLTree<Integer>();
+			}
 			this.size = size;
 		} else {
 			System.out.println("Invalid size. Must be 100 <= size <= 500,000");
@@ -36,82 +50,54 @@ public class CleverSIDC {
 		String keyString = keyGenerator.toString();
 		return Long.parseLong(keyString);
 	}
-	public Object[] allKeys() {
-		
+	@SuppressWarnings("unchecked")
+	public Sequence allKeys() {
+		if (getDataStructure() instanceof HashTable) {
+			HashTable<Integer, Integer> hashTable = (HashTable<Integer, Integer>) getDataStructure();
+			return hashTable.showAll();
+		} else if (getDataStructure() instanceof AVLTree) {
+			AVLTree<Integer> tree = (AVLTree<Integer>) getDataStructure();
+			return tree.traverse();
+		}
+		return null; // If somehow data structure doesn't work
 	}
-	
-	public int getSize() {
-		return size;
-	}
-	public boolean isEmpty() {
-		return (size==0);
-	}
-	public Object first() {
-		return elements[0];
-	}
-	public Object last() {
-		return elements[size-1];
-	}
-
-	public void add(Object element) {
-		ensureCapacity();
-		elements[size++] = element;
-	}
-	
-	public void remove(Object element) {
-		for (int i = 0; i < elements.length; i++) {
-			if (elements[i].equals(element)) {
-				// Shift elements
-				System.arraycopy(elements, i + 1, elements, i, size - i - 1);
-				elements[--size] = null; // last element (removed) now null
-				return;
-			}
+	@SuppressWarnings("unchecked")
+	public void add(CleverSIDC<K, V> cleverSIDC, K key, V value) {
+		if (getDataStructure() instanceof HashTable) {
+			HashTable<Integer, Integer> hashTable = (HashTable<Integer, Integer>) getDataStructure();
+			hashTable.put((int) key, (int) value);
+			setDataStructure(hashTable);
+		} else if (getDataStructure() instanceof AVLTree) {
+			AVLTree<Integer> tree = (AVLTree<Integer>) getDataStructure();
+			tree.insert((int) value); // no need for a key in an AVL tree, it is sorted
+			setDataStructure(tree);
 		}
 	}
-	
-	private void ensureCapacity() {
-		if (size == elements.length) {
-			// resize if the array doesn't have space
-			int capacity = elements.length * 2;
-			Object[] newElements = new Object[capacity];
-			for (int i = 0; i < elements.length; i++) {
-				newElements[i] = elements[i];
-			}
-			elements = newElements;
+	@SuppressWarnings("unchecked")
+	public void remove(CleverSIDC<K, V> cleverSIDC, K key) {
+		if (getDataStructure() instanceof HashTable) {
+			HashTable<Integer, Integer> hashTable = (HashTable<Integer, Integer>) getDataStructure();
+			hashTable.remove((int) key);
+			setDataStructure(hashTable);
+		} else if (getDataStructure() instanceof AVLTree) {
+			AVLTree<Integer> tree = (AVLTree<Integer>) getDataStructure();
+			tree.delete(tree. ); // no need for a key in an AVL tree, it is sorted
+			setDataStructure(tree);
 		}
 	}
-	
-	public void printSeq() {
-		System.out.print("Printing the sequence:");
-		for (int i = 0; i < elements.length; i++) {
-			System.out.println(elements[i]);
-		}
+	public V getValues(CleverSIDC<K, V> cleverSIDC, K key) {
+		return null;
+	}
+	public K nextKey(CleverSIDC<K, V> cleverSIDC, K key) {
+		return null;
+	}
+	public K prevKey(CleverSIDC<K, V> cleverSIDC, K key) {
+		return null;
+	}
+	public int rangeKey(K key1, K key2) {
+		return 0;
 	}
 	
-	public Object set(Object p, Object e) {
-		Object temp = p;
-		for (int i = 0; i < elements.length; i++) {
-			if (elements[i] == temp) {
-				elements[i] = e;
-				break;
-			}
-		}
-		return temp;
-	}
-	
-	public Object atIndex(int index) {
-		Object foundObject = null;
-		for (int i = 0; i < elements.length; i++) {
-			if (i == index) {
-				foundObject = elements[i];
-			}
-		}
-		return foundObject;
-	}
-	
-	
-	
-
 	public static void main(String[] args) {
 		
 		

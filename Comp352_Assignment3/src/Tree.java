@@ -4,7 +4,7 @@ public interface Tree<T extends Comparable<T>> {
 	
 	void delete(T data);
 	
-	void traverse();
+	Sequence traverse();
 	
 	T getMax();
 	
